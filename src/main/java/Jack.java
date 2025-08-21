@@ -27,7 +27,7 @@ public class Jack {
             else if (userInput.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ". " + tasks[i].getStatusIcon()  + " " + tasks[i].getDescription());
+                    System.out.println((i + 1) + "." + tasks[i].toString());
                 }
             }
 
@@ -46,17 +46,51 @@ public class Jack {
                 System.out.println("OK, I've marked this task as not done yet:\n" + tasks[taskNumber].getStatusIcon() + " " + tasks[taskNumber].getDescription());
             }
 
-             // If the user types anything else, add it as a task
-            else {
-                tasks[taskCount] = new Task(userInput);  // Store the task
-                taskCount++;  // Increment task count
-                System.out.println("added: " + userInput);
+            // If the user types "todo", add a ToDo task
+            else if (userInput.startsWith("todo")) {
+                String description = userInput.substring(5);  // Remove the "todo " part
+                tasks[taskCount] = new ToDos(description);
+                taskCount++;
+                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
             }
+
+            // If the user types "deadline", add a Deadline task
+            else if (userInput.startsWith("deadline")) {
+                String[] parts = userInput.split("/by");
+                String description = parts[0].substring(9).trim();
+                String by = parts[1].trim();
+                tasks[taskCount] = new Deadline(description, by);
+                taskCount++;
+                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
+            }
+
+            // If the user types "event", add an Event task
+            else if (userInput.startsWith("event")) {
+                String[] parts = userInput.split("/from");
+                String description = parts[0].substring(6).trim();
+                String[] timeParts = parts[1].split("/to");
+                String from = timeParts[0].trim();
+                String to = timeParts[1].trim();
+                tasks[taskCount] = new Events(description, from, to);
+                taskCount++;
+                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
+            }
+
+             // If the user types anything else, add it as a task
+            // else {
+            //     tasks[taskCount] = new Task(userInput);  // Store the task
+            //     taskCount++;  // Increment task count
+            //     System.out.println("added: " + userInput);
+            // }
         }
         
         // Close the scanner
         scanner.close();
     }
 }
+
 
 
