@@ -48,35 +48,60 @@ public class Jack {
 
             // If the user types "todo", add a ToDo task
             else if (userInput.startsWith("todo")) {
-                String description = userInput.substring(5);  // Remove the "todo " part
-                tasks[taskCount] = new ToDos(description);
-                taskCount++;
-                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
+                try {
+                    String description = userInput.length() > 4 ? userInput.substring(5).trim() : "";  // Remove the "todo " part
+                    if (description.isEmpty()) {
+                        throw new IllegalArgumentException("The description of a todo cannot be empty.");
+                    }
+                    tasks[taskCount] = new ToDos(description);
+                    taskCount++;
+                    System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                } catch(Exception e) {
+                    System.out.println("OOPS!!! " + e.getMessage());
+                }   
             }
 
             // If the user types "deadline", add a Deadline task
             else if (userInput.startsWith("deadline")) {
-                String[] parts = userInput.split("/by");
-                String description = parts[0].substring(9).trim();
-                String by = parts[1].trim();
-                tasks[taskCount] = new Deadline(description, by);
-                taskCount++;
-                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
-            }
+                try {
+                    String[] parts = userInput.split("/by");
+                    if (parts.length < 2 || parts[0].substring(9).trim().isEmpty() || parts[1].trim().isEmpty()) {
+                        throw new IllegalArgumentException("Please provide a description and a deadline using '/by'.");
+                    }
+                    String description = parts[0].substring(9).trim();
+                    String by = parts[1].trim();
+                    tasks[taskCount] = new Deadline(description, by);
+                    taskCount++;
+                    System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                } catch (Exception e) {
+                    System.out.println("OOPS!!! " + e.getMessage());
+                }
+            }  
 
             // If the user types "event", add an Event task
             else if (userInput.startsWith("event")) {
-                String[] parts = userInput.split("/from");
-                String description = parts[0].substring(6).trim();
-                String[] timeParts = parts[1].split("/to");
-                String from = timeParts[0].trim();
-                String to = timeParts[1].trim();
-                tasks[taskCount] = new Events(description, from, to);
-                taskCount++;
-                System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
+                try {
+                    String[] parts = userInput.split("/from");
+                    if (parts.length < 2 || parts[0].substring(6).trim().isEmpty()) {
+                        throw new IllegalArgumentException("Please provide a description and start time using '/from'.");
+                    }
+                    String description = parts[0].substring(6).trim();
+                    String[] timeParts = parts[1].split("/to");
+                    String from = timeParts[0].trim();
+                    String to = timeParts[1].trim();
+                    tasks[taskCount] = new Events(description, from, to);
+                    taskCount++;
+                    System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                } catch (Exception e) {
+                    System.out.println("OOPS!!! " + e.getMessage());
+                }
+            }
+
+            else {
+                System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
 
              // If the user types anything else, add it as a task
@@ -91,6 +116,3 @@ public class Jack {
         scanner.close();
     }
 }
-
-
-
