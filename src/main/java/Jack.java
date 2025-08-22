@@ -100,16 +100,36 @@ public class Jack {
                 }
             }
 
+            else if (userInput.startsWith("delete")) {
+                try {
+                    String[] parts = userInput.split(" ");
+                    if (parts.length < 2) { // No number provided
+                        throw new IllegalArgumentException("Please provide a task number to delete.");
+                    }
+
+                    int taskNumber = Integer.parseInt(parts[1]) - 1;
+
+                    if (taskNumber < 0 || taskNumber >= taskCount) {
+                        throw new IllegalArgumentException("Invalid task number.");
+                    }
+                    Task removedTask = tasks[taskNumber];
+                    // Shift all tasks after the deleted one left by one
+                    for (int i = taskNumber; i < taskCount - 1; i++) {
+                        tasks[i] = tasks[i + 1];
+                    }
+                    tasks[taskCount - 1] = null; // Clear last element
+                    taskCount--;
+                    System.out.println("Noted. I've removed this task:\n  " + removedTask);
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                } catch (Exception e) {
+                    System.out.println("OOPS!!! " + e.getMessage());
+                }
+            }
+
             else {
                 System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
 
-             // If the user types anything else, add it as a task
-            // else {
-            //     tasks[taskCount] = new Task(userInput);  // Store the task
-            //     taskCount++;  // Increment task count
-            //     System.out.println("added: " + userInput);
-            // }
         }
         
         // Close the scanner
