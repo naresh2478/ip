@@ -7,5 +7,6 @@ T | 0 | run
 T | 0 | swimmmm
 T | 0 | polo
 T | 0 | run
-T | 0 | polo
+T | 1 | polo
 T | 1 | checkkkkkk
+T | 1 | run
