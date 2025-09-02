@@ -1,18 +1,22 @@
 
-import java.util.Scanner;
+import Commands.Command;
+import Parser.Parser;
+import Storage.Storage;
+import TaskLists.TaskList;
+import UI.Ui;
 
 public class Jack {
 
-    private Ui ui;
-    private TaskList taskList;
-    private Storage storage;
+    private final Ui ui;
+    private final TaskList taskList;
+    private final Storage storage;
 
     public Jack(String filePath) {
         ui = new Ui();  // Initialize the UI class
-        taskList = new TaskList();  // Initialize the TaskList class
-        storage = new Storage(filePath);  // Initialize the Storage class
+        taskList = new TaskList();  // Initialize the TaskList.TaskList class
+        storage = new Storage(filePath);  // Initialize the Storage.Storage class
 
-        // Load tasks from storage into the TaskList
+        // Load tasks from storage into the TaskList.TaskList
         storage.loadTasks(taskList);
     }
 
@@ -23,7 +27,7 @@ public class Jack {
         while (!isExit) {
             try {
                 String fullCommand = ui.readCommand();  // Read the user command
-                // Parse the command using Parser and execute it
+                // Parse the command using Parser.Parser and execute it
                 Command c = Parser.parse(fullCommand);
                 c.execute(taskList, ui, storage);
 

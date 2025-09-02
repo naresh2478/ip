@@ -1,3 +1,11 @@
+package Commands;
+
+import TaskLists.TaskList;
+import UI.Ui;
+import Storage.Storage;
+import Tasks.Task;
+import Tasks.Events;
+
 public class AddEventCommand extends Command {
 
     private final String description;
@@ -25,7 +33,7 @@ public class AddEventCommand extends Command {
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
 
-        // Add the event task to the TaskList
+        // Add the event task to the TaskList.TaskList
         taskList.addTask(task);
 
         // Show success message

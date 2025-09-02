@@ -1,3 +1,9 @@
+package Commands;
+
+import TaskLists.TaskList;
+import UI.Ui;
+import Storage.Storage;
+
 public abstract class Command {
     public abstract void execute(TaskList taskList, Ui ui, Storage storage);
 

@@ -1,3 +1,7 @@
+package TaskLists;
+
+import Tasks.Task;
+
 import java.util.ArrayList;
 
 public class TaskList {
