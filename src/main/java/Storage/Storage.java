@@ -1,6 +1,13 @@
+package Storage;
+
+import TaskLists.TaskList;
+import Tasks.Deadline;
+import Tasks.Events;
+import Tasks.ToDos;
+import Tasks.Task;
+
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
 
 public class Storage {
 
@@ -10,7 +17,7 @@ public class Storage {
         this.filePath = filePath;
     }
 
-    // Load tasks from file into the TaskList
+    // Load tasks from file into the TaskList.TaskList
     public void loadTasks(TaskList taskList) {
         try {
             // Create file and folder if they do not exist
@@ -28,9 +35,9 @@ public class Storage {
                     String[] parts = line.split(" \\| ");
                     if (parts.length < 3) continue; // Skip invalid lines
 
-                    String type = parts[0];  // Type of task (ToDo, Deadline, Event)
-                    String status = parts[1];  // Task status (1 for done, 0 for not done)
-                    String description = parts[2];  // Task description
+                    String type = parts[0];  // Type of task (ToDo, Tasks.Deadline, Event)
+                    String status = parts[1];  // Tasks.Task status (1 for done, 0 for not done)
+                    String description = parts[2];  // Tasks.Task description
                     boolean isDone = status.equals("1");  // Mark task as done or not
 
                     Task task = null;
@@ -62,7 +69,7 @@ public class Storage {
                         if (isDone) {
                             task.markAsDone();
                         }
-                        taskList.addTask(task);  // Add task to the TaskList
+                        taskList.addTask(task);  // Add task to the TaskList.TaskList
                     }
                 }
                 br.close();
@@ -72,7 +79,7 @@ public class Storage {
         }
     }
 
-    // Save tasks from TaskList to the file
+    // Save tasks from TaskList.TaskList to the file
     public void saveTasks(TaskList taskList) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));

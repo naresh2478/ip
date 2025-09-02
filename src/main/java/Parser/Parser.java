@@ -1,6 +1,11 @@
+package Parser;
+
+import Commands.*;
+import Exceptions.JackException;
+
 public class Parser {
 
-    // Parse user input and return the corresponding Command
+    // Parse user input and return the corresponding Commands.Command
     public static Command parse(String userInput) throws JackException {
         String[] parts = userInput.split(" ", 2);  // Split the command into the main command and its argument
         String command = parts[0].toLowerCase();
@@ -13,7 +18,7 @@ public class Parser {
                 return new AddTodoCommand(parts[1]);  // Pass description for Todo task
 
             case "deadline":
-                return parseDeadline(parts[1]);  // Pass description and deadline string for Deadline task
+                return parseDeadline(parts[1]);  // Pass description and deadline string for Tasks.Deadline task
 
             case "event":
                 return parseEvent(parts[1]);  // Pass description and time range for Event task
@@ -44,7 +49,7 @@ public class Parser {
         String description = parts[0].trim();
         String deadline = parts[1].trim();
 
-        // Return the AddDeadlineCommand with description and deadline
+        // Return the Commands.AddDeadlineCommand with description and deadline
         return new AddDeadlineCommand(description, deadline);
     }
 
@@ -64,7 +69,7 @@ public class Parser {
         String from = timeParts[0].trim();
         String to = timeParts[1].trim();
 
-        // Return the AddEventCommand with description, from and to times
+        // Return the Commands.AddEventCommand with description, from and to times
         return new AddEventCommand(description, from, to);
     }
 }

@@ -1,4 +1,10 @@
-public class ListCommand extends Command{
+package Commands;
+
+import TaskLists.TaskList;
+import UI.Ui;
+import Storage.Storage;
+
+public class ListCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {

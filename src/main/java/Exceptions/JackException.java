@@ -1,3 +1,5 @@
+package Exceptions;
+
 public class JackException extends Exception {
 
     // Constructor that accepts a custom error message

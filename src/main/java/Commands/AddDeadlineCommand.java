@@ -1,6 +1,15 @@
+package Commands;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import Tasks.Task;
+import Tasks.Deadline;  // assuming Deadline extends Task
+import TaskLists.TaskList;
+import UI.Ui;
+import Storage.Storage;
+
 
 public class AddDeadlineCommand extends Command {
     private final String description;
