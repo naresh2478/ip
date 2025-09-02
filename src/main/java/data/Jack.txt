@@ -3,10 +3,12 @@ T | 0 | run
 T | 0 | swimmmm
 T | 0 | polo
 T | 0 | run
-T | 0 | run
 T | 0 | swimmmm
 T | 0 | polo
 T | 0 | run
 T | 1 | polo
 T | 1 | checkkkkkk
 T | 1 | run
+T | 0 | run 
+E | 0 | project meeting | Mon 2pm to 4pm
+D | 1 | run | 2003-10-12

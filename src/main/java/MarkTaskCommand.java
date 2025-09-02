@@ -8,6 +8,10 @@ public class MarkTaskCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
+
+        if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
+            throw new IllegalArgumentException("Invalid task number. Please enter a valid task number.");
+        }
         // Mark the task as done in the TaskList
         taskList.markAsDone(taskNumber);
 

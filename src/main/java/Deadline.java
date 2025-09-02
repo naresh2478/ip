@@ -1,19 +1,33 @@
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class Deadline extends Task {
 
-    protected String by;
+    protected LocalDate by;  // Store the deadline as a LocalDate
 
+    // Constructor that accepts description and deadline as strings
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
+
+        // Parse the deadline string into LocalDate
+        try {
+            this.by = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd"));  // Parse the date in "YYYY-MM-DD" format
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Please use 'YYYY-MM-DD' format for the deadline.");
+        }
     }
 
-    public String getDeadline() {
-        return this.by;
+    public LocalDate getDeadline() {
+        return this.by;  // Return the LocalDate object
     }
-
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        // Format the deadline into the "MMM dd yyyy" format for display (e.g., "Oct 15 2023")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
+        String formattedDate = by.format(formatter);
+        return "[D]" + super.toString() + " (by: " + formattedDate + ")";
     }
 }

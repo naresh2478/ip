@@ -13,6 +13,15 @@ public class AddEventCommand extends Command {
 
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
+        // Input validation for description, from, and to times
+//        if (description == null || description.trim().isEmpty()) {
+//            throw new IllegalArgumentException("Event description cannot be empty.");
+//        }
+//
+//        if (from == null || from.trim().isEmpty() || to == null || to.trim().isEmpty()) {
+//            throw new IllegalArgumentException("Event must have both start and end times.");
+//        }
+
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
 
@@ -26,4 +35,10 @@ public class AddEventCommand extends Command {
         // Save the updated task list to the file
         storage.saveTasks(taskList);
     }
+
+    @Override
+    public boolean isExit() {
+        return false;  // This command doesn't cause the program to exit
+    }
 }
+
