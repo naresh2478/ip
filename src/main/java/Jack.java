@@ -2,6 +2,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Jack {
@@ -81,7 +83,14 @@ public class Jack {
                     }
                     String description = parts[0].substring(9).trim();
                     String by = parts[1].trim();
-                    tasks[taskCount] = new Deadline(description, by);
+                    LocalDate deadlineDate;
+                    try {
+                        deadlineDate = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd format for the deadline.");
+                    }
+
+                    tasks[taskCount] = new Deadline(description, deadlineDate.toString());
                     taskCount++;
                     System.out.println("Got it. I've added this task:\n" + tasks[taskCount - 1]);
                     System.out.println("Now you have " + taskCount + " tasks in the list.");
