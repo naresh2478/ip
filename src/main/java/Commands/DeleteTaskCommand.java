@@ -6,7 +6,11 @@ import Storage.Storage;
 import Tasks.Task;
 
 
-
+/**
+ * The DeleteTaskCommand class represents a command to delete a task from the task list.
+ * It takes a task number, validates it, and removes the corresponding task from the list.
+ * This class extends the Command class.
+ */
 public class DeleteTaskCommand extends Command {
     private final int taskNumber;
 
@@ -14,6 +18,15 @@ public class DeleteTaskCommand extends Command {
         this.taskNumber = taskNumber;
     }
 
+    /**
+     * Executes the DeleteTaskCommand. This method checks if the task number is valid,
+     * deletes the corresponding task from the task list, and saves the updated task list to storage.
+     * If the task number is invalid, an error message is displayed to the user.
+     *
+     * @param taskList The task list from which the task will be deleted.
+     * @param ui The UI object used to display error messages to the user.
+     * @param storage The storage object used to save the updated task list.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         // Error handling for invalid task number

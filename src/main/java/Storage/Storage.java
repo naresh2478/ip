@@ -9,6 +9,12 @@ import Tasks.Task;
 import java.io.*;
 import java.nio.file.*;
 
+/**
+ * The Storage class handles loading and saving tasks to and from a file.
+ * It provides methods to load tasks from a file into a TaskList and save the tasks
+ * in a TaskList to a file. The file is specified by the filePath provided when the
+ * Storage object is created.
+ */
 public class Storage {
 
     private final String filePath;
