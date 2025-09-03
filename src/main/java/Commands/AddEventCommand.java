@@ -6,6 +6,11 @@ import Storage.Storage;
 import Tasks.Task;
 import Tasks.Events;
 
+/**
+ * The AddEventCommand class represents a command to add a new event task to the task list.
+ * It takes a description, start time (from), and end time (to), and adds the event to the task list.
+ * This class extends the Command class.
+ */
 public class AddEventCommand extends Command {
 
     private final String description;
@@ -19,6 +24,15 @@ public class AddEventCommand extends Command {
         this.to = to;
     }
 
+    /**
+     * Executes the AddEventCommand. This method creates a new event task using the provided
+     * description, start time, and end time. The task is then added to the task list, and the
+     * updated task list is saved to storage.
+     *
+     * @param taskList The task list where the task will be added.
+     * @param ui The UI object to interact with the user (though not used in this method).
+     * @param storage The storage object to save the updated task list.
+     */
     @Override
     public void execute(TaskList taskList, Ui ui, Storage storage) {
         // Input validation for description, from, and to times
