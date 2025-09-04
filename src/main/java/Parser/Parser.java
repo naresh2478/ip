@@ -11,32 +11,54 @@ public class Parser {
         String command = parts[0].toLowerCase();
 
         switch (command) {
-            case "list":
-                return new ListCommand();
 
-            case "todo":
-                return new AddTodoCommand(parts[1]);  // Pass description for Todo task
+        case "list":
+            return new ListCommand();
 
-            case "deadline":
-                return parseDeadline(parts[1]);  // Pass description and deadline string for Tasks.Deadline task
+        case "todo":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please provide a task description.");
+            }
+            return new AddTodoCommand(parts[1]);  // Pass description for Todo task
 
-            case "event":
-                return parseEvent(parts[1]);  // Pass description and time range for Event task
+        case "deadline":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please provide a task description and a deadline.");
+            }
+            return parseDeadline(parts[1]);  // Pass description and deadline string for Tasks.Deadline task
 
-            case "mark":
-                return new MarkTaskCommand(Integer.parseInt(parts[1]) - 1);  // Mark task by index
+        case "event":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please provide a task description and a time period.");
+            }
+            return parseEvent(parts[1]);  // Pass description and time range for Event task
 
-            case "unmark":
-                return new UnmarkTaskCommand(Integer.parseInt(parts[1]) - 1);  // Unmark task by index
+        case "mark":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please enter a valid task number.");
+            }
+            return new MarkTaskCommand(Integer.parseInt(parts[1]) - 1);  // Mark task by index
 
-            case "delete":
-                return new DeleteTaskCommand(Integer.parseInt(parts[1]) - 1);  // Delete task by index
+        case "unmark":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please enter a valid task number.");
+            }
+            return new UnmarkTaskCommand(Integer.parseInt(parts[1]) - 1);  // Unmark task by index
 
-            case "bye":
-                return new ExitCommand();  // Exit the program
+        case "delete":
+            return new DeleteTaskCommand(Integer.parseInt(parts[1]) - 1);  // Delete task by index
 
-            default:
-                throw new JackException("Invalid command: " + command);  // Handle invalid command
+        case "bye":
+            return new ExitCommand();  // Exit the program
+
+        case "find":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please provide a keyword to search for.");
+            }
+            return new FindCommand(parts[1]);
+
+        default:
+            throw new JackException("Invalid command: " + command);  // Handle invalid command
         }
     }
 
