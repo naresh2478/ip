@@ -1,3 +1,4 @@
+package App;
 
 import Commands.Command;
 import Parser.Parser;
@@ -20,6 +21,8 @@ public class Jack {
         storage.loadTasks(taskList);
     }
 
+
+
     public void run() {
         ui.showWelcome();  // Show welcome message
 
@@ -40,8 +43,23 @@ public class Jack {
         }
     }
 
+    /**
+     * Processes user input and returns the response as a String for GUI.
+     */
+    public String getResponse(String input) {
+        try {
+            Command c = Parser.parse(input);
+            String response = c.execute(taskList, ui, storage);
+
+            assert response != null : "Command execution should not return null";
+            return response;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
     public static void main(String[] args) {
-        // Initialize Jack with the file path to store tasks
+        // Initialize App.Jack with the file path to store tasks
         new Jack("data/Jack.txt").run();  // Start the application
     }
 }

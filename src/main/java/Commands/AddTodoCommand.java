@@ -28,7 +28,7 @@ public class AddTodoCommand extends Command {
      * @throws IllegalArgumentException if the description is null or empty.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
         if (description == null || description.trim().isEmpty()) {
             throw new IllegalArgumentException("The description of a todo cannot be empty.");
         }
@@ -37,6 +37,7 @@ public class AddTodoCommand extends Command {
         taskList.addTask(task);
         System.out.println("Got it. I've added this task:\n" + task);
         storage.saveTasks(taskList);
+        return ui.showAdd(task, taskList.getTaskCount());
     }
 
     @Override

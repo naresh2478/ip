@@ -36,22 +36,16 @@ public class AddDeadlineCommand extends Command {
      * @throws IllegalArgumentException If the date format is invalid or the input is incorrect.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
-//        if (description == null || description.trim().isEmpty()) {
-//            throw new IllegalArgumentException("The description of a deadline cannot be empty.");
-//        }
-
-//        if (deadline == null || deadline.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Please provide a valid deadline.");
-//        }
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
 
         try {
             // Validate the deadline date format
             LocalDate parsedDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Task task = new Deadline(description, parsedDate.toString());
             taskList.addTask(task);
-            System.out.println("Got it. I've added this deadline:\n" + task);
+            //System.out.println("Got it. I've added this deadline:\n" + task);
             storage.saveTasks(taskList);
+            return ui.showAdd(task, taskList.getTaskCount());
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd format for the deadline.");
         }
