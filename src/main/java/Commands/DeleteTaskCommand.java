@@ -28,7 +28,7 @@ public class DeleteTaskCommand extends Command {
      * @param storage The storage object used to save the updated task list.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
         // Error handling for invalid task number
         try {
             if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
@@ -45,10 +45,11 @@ public class DeleteTaskCommand extends Command {
 
             // Save the updated task list to storage
             storage.saveTasks(taskList);
+            return ui.showDelete(removedTask, taskList.getTaskCount());
 
         } catch (Exception e) {
             // Handle invalid task number error
-            ui.showError(e.getMessage());
+            return ui.showError(e.getMessage());
         }
     }
 

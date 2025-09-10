@@ -3,6 +3,7 @@ package TaskLists;
 import Tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskList {
 
@@ -44,5 +45,11 @@ public class TaskList {
     // Unmark a task as not done
     public void unmark(int index) {
         tasks.get(index).unmark();
+    }
+
+    public List<Task> find(String keyword) {
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(keyword.toLowerCase()))
+                .toList();
     }
 }

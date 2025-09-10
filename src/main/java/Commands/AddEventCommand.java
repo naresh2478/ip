@@ -34,15 +34,7 @@ public class AddEventCommand extends Command {
      * @param storage The storage object to save the updated task list.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
-        // Input validation for description, from, and to times
-//        if (description == null || description.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Event description cannot be empty.");
-//        }
-//
-//        if (from == null || from.trim().isEmpty() || to == null || to.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Event must have both start and end times.");
-//        }
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
 
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
@@ -50,12 +42,10 @@ public class AddEventCommand extends Command {
         // Add the event task to the TaskList.TaskList
         taskList.addTask(task);
 
-        // Show success message
-        System.out.println("Got it. I've added this task:\n" + task);
-        System.out.println("Now you have " + taskList.getTaskCount() + " tasks in the list.");
 
         // Save the updated task list to the file
         storage.saveTasks(taskList);
+        return ui.showAdd(task, taskList.getTaskCount());
     }
 
     @Override

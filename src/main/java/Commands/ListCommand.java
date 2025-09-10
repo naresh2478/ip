@@ -19,11 +19,8 @@ public class ListCommand extends Command {
      * @param storage The storage object (though not used in this method).
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
-        System.out.println("Here are all the tasks in your list:");
-        for (int i = 0; i < taskList.getTaskCount(); i++) {
-            System.out.println((i + 1) + "." + taskList.getTasks().get(i).toString());
-        }
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
+        return ui.showList(taskList.getTasks());
     }
 
     @Override

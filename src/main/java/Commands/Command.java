@@ -12,7 +12,7 @@ import Storage.Storage;
  * the execute method to perform specific actions.
  */
 public abstract class Command {
-    public abstract void execute(TaskList taskList, Ui ui, Storage storage);
+    public abstract String execute(TaskList taskList, Ui ui, Storage storage);
 
     public abstract boolean isExit();
 }

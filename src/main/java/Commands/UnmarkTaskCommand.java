@@ -29,7 +29,7 @@ public class UnmarkTaskCommand extends Command {
      * @throws IllegalArgumentException if the task number is invalid.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
         if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
             throw new IllegalArgumentException("Invalid task number. Please enter a valid task number.");
         }
@@ -38,10 +38,10 @@ public class UnmarkTaskCommand extends Command {
 
         // Display success message
         Task task = taskList.getTasks().get(taskNumber);
-        System.out.println("OK, I've marked this task as not done yet:\n" + task.getStatusIcon() + " " + task.getDescription());
 
         // Save the updated tasks to the file
         storage.saveTasks(taskList);
+        return ui.showUnmark(task);
     }
 
     @Override

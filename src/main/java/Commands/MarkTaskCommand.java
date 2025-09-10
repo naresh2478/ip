@@ -29,7 +29,7 @@ public class MarkTaskCommand extends Command {
      * @throws IllegalArgumentException if the task number is invalid.
      */
     @Override
-    public void execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) {
 
         if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
             throw new IllegalArgumentException("Invalid task number. Please enter a valid task number.");
@@ -43,6 +43,7 @@ public class MarkTaskCommand extends Command {
 
         // Save the updated tasks to the file
         storage.saveTasks(taskList);
+        return ui.showMark(task);
     }
 
     @Override
