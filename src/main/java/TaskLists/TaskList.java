@@ -14,16 +14,19 @@ public class TaskList {
     }
 
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "Task list should not be null";
         this.tasks = tasks;
     }
 
     // Add a task to the list
     public void addTask(Task task) {
+        assert task != null : "Task to add should not be null";
         tasks.add(task);
     }
 
     // Delete a task from the list
     public void deleteTask(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds in deleteTask";
         tasks.remove(index);
     }
 
@@ -39,11 +42,13 @@ public class TaskList {
 
     // Mark a task as done
     public void markAsDone(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds in markAsDone";
         tasks.get(index).markAsDone();
     }
 
     // Unmark a task as not done
     public void unmark(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds in unmark";
         tasks.get(index).unmark();
     }
 

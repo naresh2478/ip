@@ -21,6 +21,8 @@ public class AddDeadlineCommand extends Command {
     private final String deadline;
 
     public AddDeadlineCommand(String description, String deadline) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
         this.description = description;
         this.deadline = deadline;
     }
@@ -37,6 +39,8 @@ public class AddDeadlineCommand extends Command {
      */
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
 
         try {
             // Validate the deadline date format

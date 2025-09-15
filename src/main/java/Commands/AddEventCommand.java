@@ -19,6 +19,9 @@ public class AddEventCommand extends Command {
 
     // Constructor to initialize the event task details
     public AddEventCommand(String description, String from, String to) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
+        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
         this.description = description;
         this.from = from;
         this.to = to;
@@ -35,6 +38,9 @@ public class AddEventCommand extends Command {
      */
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
+        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
 
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
@@ -53,4 +59,3 @@ public class AddEventCommand extends Command {
         return false;  // This command doesn't cause the program to exit
     }
 }
-
