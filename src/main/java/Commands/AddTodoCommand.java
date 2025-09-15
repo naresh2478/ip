@@ -1,10 +1,11 @@
 package Commands;
 
-import TaskLists.TaskList;
-import UI.Ui;
+import Exceptions.JackException;
 import Storage.Storage;
+import TaskLists.TaskList;
 import Tasks.Task;
 import Tasks.ToDos;
+import UI.Ui;
 
 /**
  * The AddTodoCommand class represents a command to add a new To-Do task to the task list.
@@ -29,18 +30,19 @@ public class AddTodoCommand extends Command {
      * @throws IllegalArgumentException if the description is null or empty.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
+
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+
         assert description != null && !description.trim().isEmpty() : "Description must not be empty";
 
         Task task = new ToDos(description);
         taskList.addTask(task);
-        System.out.println("Got it. I've added this task:\n" + task);
         storage.saveTasks(taskList);
         return ui.showAdd(task, taskList.getTaskCount());
     }
 
     @Override
     public boolean isExit() {
-        return false;  // This command doesn't cause the program to exit
+        return false; // This command doesn't cause the program to exit
     }
 }

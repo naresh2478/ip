@@ -1,5 +1,6 @@
 package Commands;
 
+import Exceptions.JackException;
 import Storage.Storage;
 import TaskLists.TaskList;
 import Tasks.Task;
@@ -29,10 +30,10 @@ public class MarkTaskCommand extends Command {
      * @throws IllegalArgumentException if the task number is invalid.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
 
         if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
-            throw new IllegalArgumentException("Invalid task number. Please enter a valid task number.");
+            throw new JackException("Invalid task number. Please enter a valid task number.");
         }
         // Mark the task as done in the TaskList.TaskList
         taskList.markAsDone(taskNumber);

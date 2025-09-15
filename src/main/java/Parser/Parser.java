@@ -48,6 +48,9 @@ public class Parser {
             return new UnmarkTaskCommand(Integer.parseInt(parts[1]) - 1);  // Unmark task by index
 
         case "delete":
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
+                throw new JackException("Please enter a valid task number.");
+            }
             return new DeleteTaskCommand(Integer.parseInt(parts[1]) - 1);  // Delete task by index
 
         case "bye":

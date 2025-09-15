@@ -1,9 +1,9 @@
 package Commands;
 
+import Exceptions.JackException;
+import Storage.Storage;
 import TaskLists.TaskList;
 import UI.Ui;
-import Storage.Storage;
-
 /**
  * The ListCommand class represents a command to display all tasks in the task list.
  * It retrieves and prints the list of tasks from the provided task list.
@@ -19,7 +19,7 @@ public class ListCommand extends Command {
      * @param storage The storage object (though not used in this method).
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
         return ui.showList(taskList.getTasks());
     }
 

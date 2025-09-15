@@ -2,27 +2,25 @@ package Tasks;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
+/**
+ * Represents a task with a deadline.
+ * Stores the deadline as a LocalDate and provides formatted output.
+ */
 public class Deadline extends Task {
 
-    protected LocalDate by;  // Store the deadline as a LocalDate
+    protected LocalDate by; // Store the deadline as a LocalDate
 
     // Constructor that accepts description and deadline as strings
-    public Deadline(String description, String by) {
+    public Deadline(String description, String by)  {
         super(description);
-        assert by != null && !by.trim().isEmpty() : "Deadline must not be empty";
-        // Parse the deadline string into LocalDate
-        try {
-            this.by = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd"));  // Parse the date in "YYYY-MM-DD" format
-            assert this.by != null : "Parsed deadline date must not be null";
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Please use 'YYYY-MM-DD' format for the deadline.");
-        }
+        assert by != null && !by.isBlank() : "Deadline must not be empty";
+        this.by = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd")); // assume it's valid
     }
 
+
     public LocalDate getDeadline() {
-        return this.by;  // Return the LocalDate object
+        return this.by; // Return the LocalDate object
     }
 
     @Override
