@@ -1,10 +1,11 @@
 package Commands;
 
-import TaskLists.TaskList;
-import UI.Ui;
+import Exceptions.JackException;
 import Storage.Storage;
-import Tasks.Task;
+import TaskLists.TaskList;
 import Tasks.Events;
+import Tasks.Task;
+import UI.Ui;
 
 /**
  * The AddEventCommand class represents a command to add a new event task to the task list.
@@ -17,7 +18,13 @@ public class AddEventCommand extends Command {
     private final String from;
     private final String to;
 
-    // Constructor to initialize the event task details
+    /**
+     * Constructs an AddEventCommand with the given description, start, and end times.
+     *
+     * @param description The description of the event task.
+     * @param from The start time of the event.
+     * @param to The end time of the event.
+     */
     public AddEventCommand(String description, String from, String to) {
         this.description = description;
         this.from = from;
@@ -32,25 +39,26 @@ public class AddEventCommand extends Command {
      * @param taskList The task list where the task will be added.
      * @param ui The UI object to interact with the user (though not used in this method).
      * @param storage The storage object to save the updated task list.
+     * @throws JackException If an error occurs during execution.
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
-
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
-
         // Add the event task to the TaskList.TaskList
         taskList.addTask(task);
-
-
         // Save the updated task list to the file
         storage.saveTasks(taskList);
         return ui.showAdd(task, taskList.getTaskCount());
     }
 
+    /**
+     * Returns false as this command does not cause the program to exit.
+     *
+     * @return false
+     */
     @Override
     public boolean isExit() {
-        return false;  // This command doesn't cause the program to exit
+        return false; // This command doesn't cause the program to exit
     }
 }
-

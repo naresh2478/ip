@@ -1,8 +1,9 @@
 package Commands;
 
-import UI.Ui;
-import TaskLists.TaskList;
+import Exceptions.JackException;
 import Storage.Storage;
+import TaskLists.TaskList;
+import UI.Ui;
 
 /**
  * The ExitCommand class represents a command to exit the program.
@@ -18,12 +19,12 @@ public class ExitCommand extends Command {
      * @param storage The storage object (not used in this command).
      */
     @Override
-    public String execute(TaskList taskList, Ui ui, Storage storage) {
+    public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
         return ui.showExitMessage();
     }
 
     @Override
     public boolean isExit() {
-        return true;  // This will cause the main loop to terminate
+        return true; // This will cause the main loop to terminate
     }
 }

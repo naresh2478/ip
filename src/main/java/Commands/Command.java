@@ -1,8 +1,9 @@
 package Commands;
 
+import Exceptions.JackException;
+import Storage.Storage;
 import TaskLists.TaskList;
 import UI.Ui;
-import Storage.Storage;
 
 /**
  * The Command class is an abstract base class for all command classes.
@@ -12,7 +13,6 @@ import Storage.Storage;
  * the execute method to perform specific actions.
  */
 public abstract class Command {
-    public abstract String execute(TaskList taskList, Ui ui, Storage storage);
-
+    public abstract String execute(TaskList taskList, Ui ui, Storage storage) throws JackException;
     public abstract boolean isExit();
 }

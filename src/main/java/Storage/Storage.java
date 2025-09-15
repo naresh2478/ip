@@ -1,13 +1,19 @@
 package Storage;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import TaskLists.TaskList;
 import Tasks.Deadline;
 import Tasks.Events;
-import Tasks.ToDos;
 import Tasks.Task;
-
-import java.io.*;
-import java.nio.file.*;
+import Tasks.ToDos;
 
 /**
  * The Storage class handles loading and saving tasks to and from a file.
@@ -19,11 +25,21 @@ public class Storage {
 
     private final String filePath;
 
+    /**
+     * Constructs a Storage object with the specified file path.
+     *
+     * @param filePath The path to the file for storing tasks.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    // Load tasks from file into the TaskList.TaskList
+    /**
+     * Loads tasks from file into the TaskList.
+     * Skips malformed lines and prints warnings for errors.
+     *
+     * @param taskList The TaskList to populate with loaded tasks.
+     */
     public void loadTasks(TaskList taskList) {
         try {
             // Create file and folder if they do not exist
@@ -33,23 +49,19 @@ public class Storage {
             }
 
             if (Files.exists(path)) {
-                BufferedReader br = new BufferedReader(new FileReader(filePath));
-                String line;
-
-                // Read each line from the file
-                while ((line = br.readLine()) != null) {
-                    String[] parts = line.split(" \\| ");
-                    if (parts.length < 3) continue; // Skip invalid lines
-
-                    String type = parts[0];  // Type of task (ToDo, Tasks.Deadline, Event)
-                    String status = parts[1];  // Tasks.Task status (1 for done, 0 for not done)
-                    String description = parts[2];  // Tasks.Task description
-                    boolean isDone = status.equals("1");  // Mark task as done or not
-
-                    Task task = null;
-
-                    // Create task based on the type
-                    switch (type) {
+                try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] parts = line.split(" \\| ");
+                        if (parts.length < 3) {
+                            continue; // Skip invalid lines
+                        }
+                        String type = parts[0]; // Type of task (T, D, E)
+                        String status = parts[1]; // Task status (1 for done, 0 for not done)
+                        String description = parts[2]; // Task description
+                        boolean isDone = status.equals("1");
+                        Task task = null;
+                        switch (type) {
                         case "T":
                             task = new ToDos(description);
                             break;
@@ -63,48 +75,48 @@ public class Storage {
                             if (parts.length > 3) {
                                 String fromTo = parts[3];
                                 String[] timeParts = fromTo.split(" to ");
-                                task = new Events(description, timeParts[0], timeParts[1]);
+                                if (timeParts.length == 2) {
+                                    task = new Events(description, timeParts[0], timeParts[1]);
+                                }
                             }
                             break;
                         default:
                             break;
-                    }
-
-                    // If a task is created, mark it as done if necessary
-                    if (task != null) {
-                        if (isDone) {
-                            task.markAsDone();
                         }
-                        taskList.addTask(task);  // Add task to the TaskList.TaskList
+                        if (task != null) {
+                            if (isDone) {
+                                task.markAsDone();
+                            }
+                            taskList.addTask(task);
+                        }
                     }
                 }
-                br.close();
             }
         } catch (IOException e) {
             System.out.println("Error loading tasks: " + e.getMessage());
         }
     }
 
-    // Save tasks from TaskList.TaskList to the file
+    /**
+     * Saves tasks from TaskList to the file.
+     *
+     * @param taskList The TaskList containing tasks to save.
+     */
     public void saveTasks(TaskList taskList) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-
-            // Write each task to the file in the required format
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (Task task : taskList.getTasks()) {
                 String taskStatus = task.isDone() ? "1" : "0";
                 String taskDescription = task.getDescription();
-
-                // Write the task in the correct format
                 if (task instanceof ToDos) {
                     bw.write("T | " + taskStatus + " | " + taskDescription + "\n");
                 } else if (task instanceof Deadline) {
-                    bw.write("D | " + taskStatus + " | " + taskDescription + " | " + ((Deadline) task).getDeadline() + "\n");
+                    bw.write("D | " + taskStatus + " | " + taskDescription + " | "
+                            + ((Deadline) task).getDeadline() + "\n");
                 } else if (task instanceof Events) {
-                    bw.write("E | " + taskStatus + " | " + taskDescription + " | " + ((Events) task).getFrom() + " to " + ((Events) task).getTo() + "\n");
+                    bw.write("E | " + taskStatus + " | " + taskDescription + " | "
+                            + ((Events) task).getFrom() + " to " + ((Events) task).getTo() + "\n");
                 }
             }
-            bw.close();
         } catch (IOException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
