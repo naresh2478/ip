@@ -5,6 +5,7 @@ public abstract class Task {
     protected boolean isDone;
 
     public Task(String description) {
+        assert description != null && !description.trim().isEmpty() : "Task description must not be empty";
         this.description = description;
         this.isDone = false;
     }
