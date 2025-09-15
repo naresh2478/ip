@@ -7,7 +7,9 @@ public class Parser {
 
     // Parse user input and return the corresponding Commands.Command
     public static Command parse(String userInput) throws JackException {
+        assert userInput != null : "User input should not be null";
         String[] parts = userInput.split(" ", 2);  // Split the command into the main command and its argument
+        assert parts.length > 0 && parts[0] != null && !parts[0].isEmpty() : "Command cannot be empty";
         String command = parts[0].toLowerCase();
 
         switch (command) {

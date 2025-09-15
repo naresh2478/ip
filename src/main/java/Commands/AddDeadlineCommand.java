@@ -28,6 +28,8 @@ public class AddDeadlineCommand extends Command {
      * @param deadline The deadline date as a string.
      */
     public AddDeadlineCommand(String description, String deadline) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
         this.description = description;
         this.deadline = deadline;
     }
@@ -43,7 +45,11 @@ public class AddDeadlineCommand extends Command {
      * @throws JackException If the date format is invalid or the input is incorrect.
      */
     @Override
+
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
+
         try {
             // Validate the deadline date format
             LocalDate parsedDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));

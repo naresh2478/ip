@@ -16,6 +16,7 @@ public class AddTodoCommand extends Command {
     private final String description;
 
     public AddTodoCommand(String description) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
         this.description = description;
     }
 
@@ -29,7 +30,11 @@ public class AddTodoCommand extends Command {
      * @throws IllegalArgumentException if the description is null or empty.
      */
     @Override
+
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+
         Task task = new ToDos(description);
         taskList.addTask(task);
         storage.saveTasks(taskList);

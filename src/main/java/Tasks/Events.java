@@ -7,6 +7,8 @@ public class Events extends Task {
 
     public Events(String description, String start, String end) {
         super(description);
+        assert start != null && !start.trim().isEmpty() : "Start time must not be empty";
+        assert end != null && !end.trim().isEmpty() : "End time must not be empty";
         this.start = start;
         this.end = end;
     }

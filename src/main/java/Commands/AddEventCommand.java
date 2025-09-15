@@ -26,6 +26,9 @@ public class AddEventCommand extends Command {
      * @param to The end time of the event.
      */
     public AddEventCommand(String description, String from, String to) {
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
+        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
         this.description = description;
         this.from = from;
         this.to = to;
@@ -42,7 +45,13 @@ public class AddEventCommand extends Command {
      * @throws JackException If an error occurs during execution.
      */
     @Override
+
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+  
+        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
+        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
+        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
+
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);
         // Add the event task to the TaskList.TaskList
