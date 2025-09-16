@@ -71,6 +71,30 @@ public class Ui {
         return sb.toString();
     }
 
+    /**
+     * Shows the list of deadlines sorted by due date, in their current positions in the list.
+     * Only Deadline tasks are shown, in the order they appear after sorting.
+     *
+     * @param tasks The list of all tasks (only deadlines are shown).
+     * @return The formatted list of sorted deadlines as a string.
+     */
+    public String showSortedDeadlines(List<Task> tasks) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are your deadlines sorted by due date (in their current positions):\n");
+        int count = 1;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task instanceof Tasks.Deadline) {
+                sb.append((i + 1)).append(". ").append(task).append("\n");
+                count++;
+            }
+        }
+        if (count == 1) {
+            sb.append("No deadlines found.");
+        }
+        return sb.toString().trim();
+    }
+
 
     // Show the exit message
     public String showExitMessage() {
@@ -78,4 +102,3 @@ public class Ui {
     }
 
 }
-

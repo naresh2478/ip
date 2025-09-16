@@ -1,8 +1,10 @@
 package TaskLists;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import Tasks.Deadline;
 import Tasks.Task;
 
 public class TaskList {
@@ -56,5 +58,28 @@ public class TaskList {
         return tasks.stream()
                 .filter(task -> task.getDescription().toLowerCase().contains(keyword.toLowerCase()))
                 .toList();
+    }
+
+    /**
+     * Sorts only the Deadline tasks in place by their due date, replacing their positions in the list.
+     * All other task types remain in their original positions.
+     */
+    public void sortDeadlinesChronologicallyInPlace() {
+        // Collect indices and references to Deadline tasks
+        List<Integer> deadlineIndices = new ArrayList<>();
+        List<Deadline> deadlines = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task instanceof Deadline) {
+                deadlineIndices.add(i);
+                deadlines.add((Deadline) task);
+            }
+        }
+        // Sort the Deadline tasks by due date
+        deadlines.sort(Comparator.comparing(Deadline::getDeadline));
+        // Replace the original Deadline tasks in their positions with the sorted ones
+        for (int i = 0; i < deadlineIndices.size(); i++) {
+            tasks.set(deadlineIndices.get(i), deadlines.get(i));
+        }
     }
 }
