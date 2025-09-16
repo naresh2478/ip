@@ -62,6 +62,12 @@ public class Parser {
             }
             return new FindCommand(parts[1]);
 
+        case "sort":
+            if (parts.length < 2 || !parts[1].trim().equalsIgnoreCase("deadlines")) {
+                throw new JackException("Did you mean 'sort deadlines'? Only deadline sorting is supported.");
+            }
+            return new SortDeadlinesCommand();
+
         default:
             throw new JackException("Invalid command: " + command);  // Handle invalid command
         }
