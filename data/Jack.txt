@@ -1,8 +1,2 @@
-T | 0 | run
-T | 0 | run
-D | 0 | swim | 2003-12-12
-T | 0 | run
-T | 0 | run
-D | 0 | hike | 2004-12-12
-D | 0 |  | 2005-12-12
-T | 0 | run 
+T | 1 | run 
+D | 0 | submit ip | 2025-09-19
