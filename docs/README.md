@@ -9,7 +9,7 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 ## Quick Start
 
 1. **Run Jack**
-   - If using the GUI: Run the application using `./gradlew run` or by launching the main class in your IDE.
+   - If using the gui: Run the application using `./gradlew run` or by launching the main class in your IDE.
    - If using the CLI: Run the main class `Jack`.
 2. **Start chatting!** Type your commands in the input box and Jack will respond.
 
@@ -29,7 +29,7 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 - **Command:** `event <description> /at <yyyy-mm-dd HH:mm>`
 - **Example:** `event project meeting /at 2025-10-01 14:00`
 
-### 4. List All Tasks
+### 4. List All tasks
 - **Command:** `list`
 - **Description:** Shows all your tasks with their status.
 
@@ -45,7 +45,7 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 - **Command:** `delete <task number>`
 - **Example:** `delete 3`
 
-### 8. Find Tasks by Keyword
+### 8. Find tasks by Keyword
 - **Command:** `find <keyword>`
 - **Example:** `find book`
 
@@ -84,7 +84,7 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 
 ## Troubleshooting
 - **Invalid command?** Jack will show an error message. Check your command format.
-- **App not starting?** Ensure you have Java 11 or above installed.
+- **app not starting?** Ensure you have Java 11 or above installed.
 - **Still stuck?** Check the [project README](../README.md) or contact the developer.
 
 ---
