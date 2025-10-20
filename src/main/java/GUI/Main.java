@@ -14,7 +14,6 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    //private Duke duke = new Duke();
     private Jack jack = new Jack("data/Jack.txt");
 
     @Override

@@ -55,7 +55,6 @@ public class AddDeadlineCommand extends Command {
             LocalDate parsedDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Task task = new Deadline(description, parsedDate.toString());
             taskList.addTask(task);
-            // System.out.println("Got it. I've added this deadline:\n" + task);
             storage.saveTasks(taskList);
             return ui.showAdd(task, taskList.getTaskCount());
         } catch (DateTimeParseException e) {
