@@ -1,96 +1,94 @@
 package Storage;
 
 import TaskLists.TaskList;
-import Tasks.ToDos;
 import Tasks.Deadline;
 import Tasks.Events;
 import Tasks.Task;
-import org.junit.jupiter.api.BeforeEach;
+import Tasks.ToDos;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StorageTest {
 
-    private Storage storage;
-    private TaskList taskList;
-    private Path tempFilePath;
+    @Test
+    void saveAndLoad_persistsMultipleTaskTypesAndStatuses() throws Exception {
+        Path tempFile = Files.createTempFile("storageTest", ".txt");
+        tempFile.toFile().deleteOnExit();
+        Storage storage = new Storage(tempFile.toString());
 
-    @BeforeEach
-    void setUp() throws IOException {
-        // Create a temporary file to use for testing
-        tempFilePath = Files.createTempFile("testTasks", ".txt");
-        tempFilePath.toFile().deleteOnExit(); // Ensure the temp file is deleted after the test
+        TaskList original = new TaskList();
+        ToDos todo = new ToDos("buy milk");
+        Deadline deadline = new Deadline("submit report", "2025-12-31");
+        Events event = new Events("meeting", "09:00", "10:00");
 
-        // Initialize Storage with the temporary file path
-        storage = new Storage(tempFilePath.toString());
+        // mark deadline as done
+        deadline.markAsDone();
 
-        // Initialize TaskList
-        taskList = new TaskList();
+        original.addTask(todo);
+        original.addTask(deadline);
+        original.addTask(event);
+
+        // save
+        storage.saveTasks(original);
+
+        // load into fresh TaskList
+        TaskList loaded = new TaskList();
+        storage.loadTasks(loaded);
+
+        List<Task> tasks = loaded.getTasks();
+        assertEquals(3, tasks.size(), "Should load three tasks");
+
+        // Verify types and descriptions and done status preserved
+        assertTrue(tasks.get(0) instanceof ToDos);
+        assertEquals("buy milk", tasks.get(0).getDescription());
+        assertFalse(tasks.get(0).isDone());
+
+        assertTrue(tasks.get(1) instanceof Deadline);
+        assertEquals("submit report", tasks.get(1).getDescription());
+        assertTrue(tasks.get(1).isDone(), "Deadline was marked done and should be persisted as done");
+
+        assertTrue(tasks.get(2) instanceof Events);
+        assertEquals("meeting", tasks.get(2).getDescription());
+        assertFalse(tasks.get(2).isDone());
     }
 
     @Test
-    void testSaveTasks_SavesToFileCorrectly() throws IOException {
-        // Arrange
-        // Create a few tasks
-        Task task1 = new ToDos("Test Todo");
-        Task task2 = new Deadline("Test Deadline", "2025-09-01");
-        Task task3 = new Events("Test Event", "10:00 AM", "11:00 AM");
+    void load_skipsMalformedLines_andSaveWritesExpectedFormat() throws Exception {
+        Path tempFile = Files.createTempFile("storageTest2", ".txt");
+        tempFile.toFile().deleteOnExit();
+        Storage storage = new Storage(tempFile.toString());
 
-        // Add tasks to TaskList
-        taskList.addTask(task1);
-        taskList.addTask(task2);
-        taskList.addTask(task3);
+        // create a TaskList and save one todo to ensure file exists and is in known format
+        TaskList list = new TaskList();
+        list.addTask(new ToDos("alpha"));
+        storage.saveTasks(list);
 
-        // Act
-        // Save the tasks to the file using the Storage class
-        storage.saveTasks(taskList);
+        // verify file contains expected formatted line for ToDos
+        String content = Files.readString(tempFile);
+        assertTrue(content.contains("T | 0 | alpha"), "Saved file should contain a todo line in the expected format");
 
-        // Read the file contents
-        String fileContent = new String(Files.readAllBytes(tempFilePath));
+        // Now overwrite with a mixture of malformed and well-formed lines
+        String mixed = "bad line without separators\n" +
+                "T | 1 | goodtodo\n" +
+                "D | 0 | desc only missing date\n" +
+                "D | 0 | bydate | 2025-01-01\n" +
+                "E | 0 | ev | start to end\n";
+        Files.writeString(tempFile, mixed);
 
-        // Assert
-        // Check if the file contains the correct task data
-        assertTrue(fileContent.contains("T | 0 | Test Todo"), "The file should contain the ToDo task");
-        assertTrue(fileContent.contains("D | 0 | Test Deadline | 2025-09-01"), "The file should contain the Deadline task");
-        assertTrue(fileContent.contains("E | 0 | Test Event | 10:00 AM to 11:00 AM"), "The file should contain the Event task");
-    }
+        TaskList loaded = new TaskList();
+        storage.loadTasks(loaded);
 
-    @Test
-    void testSaveTasks_SavesMultipleTasksCorrectly() throws IOException {
-        // Arrange
-        Task task1 = new ToDos("Another Todo");
-        Task task2 = new ToDos("Second Todo");
+        // Should load only the well-formed entries (goodtodo, bydate deadline, ev event)
+        assertEquals(3, loaded.getTasks().size(), "Should skip malformed lines and load only valid entries");
 
-        taskList.addTask(task1);
-        taskList.addTask(task2);
-
-        // Act
-        storage.saveTasks(taskList);
-
-        // Read the file contents
-        String fileContent = new String(Files.readAllBytes(tempFilePath));
-
-        // Assert
-        assertTrue(fileContent.contains("T | 0 | Another Todo"), "The file should contain the first ToDo task");
-        assertTrue(fileContent.contains("T | 0 | Second Todo"), "The file should contain the second ToDo task");
-    }
-
-    @Test
-    void testSaveTasks_EmptyTaskList_DoesNotWriteAnything() throws IOException {
-        // Act
-        storage.saveTasks(taskList); // Save an empty task list
-
-        // Read the file contents
-        String fileContent = new String(Files.readAllBytes(tempFilePath));
-
-        // Assert
-        // Ensure the file is empty
-        assertEquals("", fileContent, "The file should be empty when there are no tasks.");
+        assertTrue(loaded.getTasks().stream().anyMatch(t -> t instanceof ToDos && t.getDescription().equals("goodtodo")));
+        assertTrue(loaded.getTasks().stream().anyMatch(t -> t instanceof Deadline && t.getDescription().equals("bydate")));
+        assertTrue(loaded.getTasks().stream().anyMatch(t -> t instanceof Events && t.getDescription().equals("ev")));
     }
 }
+

@@ -74,6 +74,15 @@ public class Jack {
     }
 
     /**
+     * Returns the welcome message from the UI as a String for GUI display.
+     *
+     * @return welcome message string
+     */
+    public String getWelcomeMessage() {
+        return ui.getWelcomeMessage();
+    }
+
+    /**
      * The main method to start the application.
      *
      * @param args Command line arguments.

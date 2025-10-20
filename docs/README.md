@@ -60,18 +60,18 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 
 ## Command Summary Table
 
-| Command         | Format/Example                                 | Description                       |
-|-----------------|------------------------------------------------|-----------------------------------|
-| todo            | todo read book                                 | Add a todo task                   |
-| deadline        | deadline submit report /by 2025-09-30 23:59    | Add a deadline task               |
-| event           | event project meeting /at 2025-10-01 14:00     | Add an event                      |
-| list            | list                                           | List all tasks                    |
-| mark            | mark 2                                         | Mark task 2 as done               |
-| unmark          | unmark 2                                       | Unmark task 2                     |
-| delete          | delete 3                                       | Delete task 3                     |
-| find            | find book                                      | Find tasks with 'book'            |
-| sortdeadlines   | sortdeadlines                                  | Sort deadlines by date            |
-| bye             | bye                                            | Exit the app                      |
+| Command        | Format/Example                              | Description                       |
+|----------------|---------------------------------------------|-----------------------------------|
+| todo           | todo read book                              | Add a todo task                   |
+| deadline       | deadline submit report /by 2025-09-30 23:59 | Add a deadline task               |
+| event          | event project meeting /at 2025-10-01 14:00  | Add an event                      |
+| list           | list                                        | List all tasks                    |
+| mark           | mark 2                                      | Mark task 2 as done               |
+| unmark         | unmark 2                                    | Unmark task 2                     |
+| delete         | delete 3                                    | Delete task 3                     |
+| find           | find book                                   | Find tasks with 'book'            |
+| sort deadlines | sort deadlines                              | Sort deadlines by date            |
+| bye            | bye                                         | Exit the app                      |
 
 ---
 

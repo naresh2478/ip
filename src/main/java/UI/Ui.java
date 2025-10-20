@@ -14,10 +14,14 @@ public class Ui {
         this.scanner = new Scanner(System.in);
     }
 
-    // Show a welcome message to the user
+    // Show a welcome message to the user (console)
     public void showWelcome() {
-        System.out.println("Hello! I'm Duke");
-        System.out.println("What can I do for you?");
+        System.out.println(getWelcomeMessage());
+    }
+
+    // Return the welcome message as a String for GUI use
+    public String getWelcomeMessage() {
+        return "Hello! I'm Jack" + System.lineSeparator() + "What can I do for you?";
     }
 
     // Read user input

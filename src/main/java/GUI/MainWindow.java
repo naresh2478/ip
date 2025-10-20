@@ -34,6 +34,12 @@ public class MainWindow extends AnchorPane {
     /** Injects the App.Jack instance */
     public void setJack(Jack j) {
         jack = j;
+        // Show welcome message from Jack in the GUI when controller is initialized
+        if (dialogContainer != null && jack != null) {
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getJackDialog(jack.getWelcomeMessage(), jackImage)
+            );
+        }
     }
 
     /**
@@ -52,4 +58,3 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
     }
 }
-

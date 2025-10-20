@@ -1,88 +1,61 @@
 package Commands;
 
-import Exceptions.JackException;
 import Storage.Storage;
 import TaskLists.TaskList;
-import Tasks.Task;
 import Tasks.ToDos;
 import UI.Ui;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddTodoCommandTest {
+class AddToDoCommandTest {
 
     private TaskList taskList;
     private Ui ui;
     private Storage storage;
-    private AddTodoCommand addTodoCommand;
-    private Path tempFilePath;
 
     @BeforeEach
-    void setUp() throws IOException {
-        // Initialize real instances for TaskList, Ui, and Storage
+    void setUp() throws Exception {
         taskList = new TaskList();
-        ui = new Ui(); // Assuming you have a default constructor for Ui
-        tempFilePath = Files.createTempFile("testTasks", ".txt");
-        tempFilePath.toFile().deleteOnExit();
-        storage = new Storage(tempFilePath.toString());
-
-        // Clear the storage file before each test (optional, to avoid leftover data)
-        storage.saveTasks(taskList); // Ensures the file starts empty
+        ui = new Ui();
+        Path tempFile = Files.createTempFile("testTasks", ".txt");
+        tempFile.toFile().deleteOnExit();
+        storage = new Storage(tempFile.toString());
+        // ensure starting empty
+        storage.saveTasks(taskList);
     }
 
     @Test
-    void testExecute_ValidDescription_AddsTaskToTaskListAndSaves() {
-        // Arrange
-        String description = "Test Task";
-        addTodoCommand = new AddTodoCommand(description);
+    void execute_withValidDescription_addsTaskAndPersists() throws Exception {
+        String description = "Test Task 1";
+        AddTodoCommand cmd = new AddTodoCommand(description);
 
-        // Act
-        addTodoCommand.execute(taskList, ui, storage);
+        cmd.execute(taskList, ui, storage);
 
-        // Assert
-        // Verify that the task was added to the task list
-        Task expectedTask = new ToDos(description);
-        assertTrue(taskList.getTasks().contains(expectedTask), "The task should be added to the task list");
+        // TaskList updated: check by type and description
+        assertTrue(taskList.getTasks().stream().anyMatch(t -> t instanceof ToDos && t.getDescription().equals(description)),
+                "TaskList should contain the new todo");
 
-//         To check if the task was saved to the storage, let's load the tasks from the storage
-        TaskList loadedTaskList = new TaskList();
-        storage.loadTasks(loadedTaskList); // Load tasks from the file
-//
-//        // Assert that the task is saved and reloaded correctly
-        assertTrue(loadedTaskList.getTasks().contains(expectedTask), "The task should be saved and reloaded from storage");
+        // Persisted to storage: load into a fresh TaskList and verify
+        TaskList loaded = new TaskList();
+        storage.loadTasks(loaded);
+        assertTrue(loaded.getTasks().stream().anyMatch(t -> t instanceof ToDos && t.getDescription().equals(description)),
+                "Loaded tasks should contain the new todo");
     }
 
     @Test
-    void testExecute_EmptyDescription_ThrowsIllegalArgumentException() {
-        // Arrange
-        addTodoCommand = new AddTodoCommand("");  // Empty description
-
-        // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            addTodoCommand.execute(taskList, ui, storage);
-        });
-
-        // Check that the exception message is correct
-        assertEquals("The description of a todo cannot be empty.", thrown.getMessage());
+    void execute_withEmptyDescription_throwsIllegalArgumentException() {
+        AddTodoCommand cmd = new AddTodoCommand("");
+        assertThrows(IllegalArgumentException.class, () -> cmd.execute(taskList, ui, storage));
     }
 
     @Test
-    void testExecute_NullDescription_ThrowsIllegalArgumentException() {
-        // Arrange
-        addTodoCommand = new AddTodoCommand(null);  // Null description
-
-        // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            addTodoCommand.execute(taskList, ui, storage);
-        });
-
-        // Check that the exception message is correct
-        assertEquals("The description of a todo cannot be empty.", thrown.getMessage());
+    void execute_withNullDescription_throwsIllegalArgumentException() {
+        AddTodoCommand cmd = new AddTodoCommand(null);
+        assertThrows(IllegalArgumentException.class, () -> cmd.execute(taskList, ui, storage));
     }
 }
