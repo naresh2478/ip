@@ -9,39 +9,41 @@ import ui.Ui;
 
 /**
  * The UnmarkTaskCommand class represents a command to unmark a task as not done in the task list.
- * It takes a task number, validates it, and updates the corresponding task status to "not done".
- * This class extends the Command class.
+ * It accepts a raw argument string (task number) and parses/validates in execute().
  */
 public class UnmarkTaskCommand extends Command {
 
-    private final int taskNumber; // The task number to be unmarked
+    private final String rawArg; // raw argument string (expected to be a number)
 
-    public UnmarkTaskCommand(int taskNumber) {
-        this.taskNumber = taskNumber;
+    public UnmarkTaskCommand(String rawArg) {
+        this.rawArg = rawArg;
     }
 
     /**
-     * Executes the UnmarkTaskCommand. This method validates the task number, unmarks the corresponding
-     * task as not done, and saves the updated task list to storage. If the task number is invalid,
-     * an exception is thrown.
-     *
-     * @param taskList The task list containing all tasks.
-     * @param ui The UI object used to interact with the user (not used in this method).
-     * @param storage The storage object used to save the updated task list.
-     * @throws IllegalArgumentException if the task number is invalid.
+     * Executes the UnmarkTaskCommand. This method parses the task number, validates it,
+     * unmarks the corresponding task as not done, and saves the updated task list to storage.
+     * If the task number is invalid, a JackException is thrown.
      */
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+        if (rawArg == null || rawArg.trim().isEmpty()) {
+            throw new JackException("Task number is required for unmark command.");
+        }
+        int num;
+        try {
+            num = Integer.parseInt(rawArg.trim());
+        } catch (NumberFormatException e) {
+            throw new JackException("Invalid task number. Please enter a valid task number.");
+        }
+        int taskNumber = num - 1; // convert to 0-based index
         if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
             throw new JackException("Invalid task number. Please enter a valid task number.");
         }
-        // Unmark the task as done in the TaskList.TaskList
+        // Unmark the task as not done in the TaskList
         taskList.unmark(taskNumber);
 
-        // Display success message
+        // Get the task and save
         Task task = taskList.getTasks().get(taskNumber);
-
-        // Save the updated tasks to the file
         storage.saveTasks(taskList);
         return ui.showUnmark(task);
     }

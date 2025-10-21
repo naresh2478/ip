@@ -9,35 +9,26 @@ import ui.Ui;
 
 /**
  * The AddEventCommand class represents a command to add a new event task to the task list.
- * It takes a description, start time (from), and end time (to), and adds the event to the task list.
- * This class extends the Command class.
+ * It accepts a raw argument string (description + /from + start + /to + end) and performs parsing/validation in execute().
  */
 public class AddEventCommand extends Command {
 
-    private final String description;
-    private final String from;
-    private final String to;
+    private final String rawArg;
 
     /**
-     * Constructs an AddEventCommand with the given description, start, and end times.
+     * Constructs an AddEventCommand with the raw argument as provided by the parser.
+     * Expected format: <description> /from <start> /to <end>
      *
-     * @param description The description of the event task.
-     * @param from The start time of the event.
-     * @param to The end time of the event.
+     * @param rawArg raw argument string (may be null)
      */
-    public AddEventCommand(String description, String from, String to) {
-        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
-        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
-        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
-        this.description = description;
-        this.from = from;
-        this.to = to;
+    public AddEventCommand(String rawArg) {
+        this.rawArg = rawArg;
     }
 
     /**
-     * Executes the AddEventCommand. This method creates a new event task using the provided
-     * description, start time, and end time. The task is then added to the task list, and the
-     * updated task list is saved to storage.
+     * Executes the AddEventCommand. This method parses the raw argument string to extract the
+     * description, start time, and end time of the event. It then creates a new event task and
+     * adds it to the task list, saving the updated task list to storage.
      *
      * @param taskList The task list where the task will be added.
      * @param ui The UI object to interact with the user (though not used in this method).
@@ -45,12 +36,26 @@ public class AddEventCommand extends Command {
      * @throws JackException If an error occurs during execution.
      */
     @Override
-
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
-  
-        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
-        assert from != null && !from.trim().isEmpty() : "Start time must not be empty";
-        assert to != null && !to.trim().isEmpty() : "End time must not be empty";
+        if (rawArg == null || rawArg.trim().isEmpty()) {
+            throw new JackException("The description of an event cannot be empty.");
+        }
+        // Expect format: <description> /from <start> /to <end>
+        String[] parts = rawArg.split("/from", 2);
+        if (parts.length < 2) {
+            throw new JackException("Invalid event format. Use: event <description> /from <start> /to <end>");
+        }
+        String description = parts[0].trim();
+        String timesPart = parts[1].trim();
+        String[] timeParts = timesPart.split("/to", 2);
+        if (timeParts.length < 2) {
+            throw new JackException("Invalid event format. Use: event <description> /from <start> /to <end>");
+        }
+        String from = timeParts[0].trim();
+        String to = timeParts[1].trim();
+        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            throw new JackException("Invalid event format. Description and times must be provided.");
+        }
 
         // Create a new Event task with the description and timing
         Task task = new Events(description, from, to);

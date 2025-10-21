@@ -8,33 +8,36 @@ import ui.Ui;
 
 /**
  * The DeleteTaskCommand class represents a command to delete a task from the task list.
- * It takes a task number, validates it, and removes the corresponding task from the list.
- * This class extends the Command class.
+ * It now accepts a raw argument string (task number) and parses/validates in execute().
  */
 public class DeleteTaskCommand extends Command {
-    private final int taskNumber;
+    private final String rawArg;
 
     /**
-     * Constructs a DeleteTaskCommand with the given task number.
+     * Constructs a DeleteTaskCommand with the raw argument string (expected a number).
      *
-     * @param taskNumber The index of the task to delete (0-based).
+     * @param rawArg raw argument string (may be null)
      */
-    public DeleteTaskCommand(int taskNumber) {
-        this.taskNumber = taskNumber;
+    public DeleteTaskCommand(String rawArg) {
+        this.rawArg = rawArg;
     }
 
     /**
-     * Executes the DeleteTaskCommand. This method checks if the task number is valid,
-     * deletes the corresponding task from the task list, and saves the updated task list to storage.
-     * If the task number is invalid, a JackException is thrown.
-     *
-     * @param taskList The task list from which the task will be deleted.
-     * @param ui The UI object used to display error messages to the user.
-     * @param storage The storage object used to save the updated task list.
-     * @throws JackException if the task number is invalid.
+     * Executes the DeleteTaskCommand. Parses and validates the task number, deletes the task,
+     * saves the task list, and returns the UI message. Throws JackException for invalid input.
      */
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
+        if (rawArg == null || rawArg.trim().isEmpty()) {
+            throw new JackException("Task number is required for delete command.");
+        }
+        int num;
+        try {
+            num = Integer.parseInt(rawArg.trim());
+        } catch (NumberFormatException e) {
+            throw new JackException("Invalid task number. Please provide a valid task number.");
+        }
+        int taskNumber = num - 1; // convert to 0-based index
         if (taskNumber < 0 || taskNumber >= taskList.getTaskCount()) {
             throw new JackException("Invalid task number. Please provide a valid task number.");
         }
@@ -49,11 +52,6 @@ public class DeleteTaskCommand extends Command {
         return ui.showDelete(removedTask, taskList.getTaskCount());
     }
 
-    /**
-     * Returns false as this command does not cause the program to exit.
-     *
-     * @return false
-     */
     @Override
     public boolean isExit() {
         return false; // This command doesn't cause the program to exit

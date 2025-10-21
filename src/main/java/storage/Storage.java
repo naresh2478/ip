@@ -42,54 +42,28 @@ public class Storage {
      */
     public void loadTasks(TaskList taskList) {
         try {
-            // Create file and folder if they do not exist
             Path path = Paths.get(filePath);
-            if (!Files.exists(path.getParent())) {
-                Files.createDirectories(path.getParent());
+            ensureParentDirectories(path);
+
+            if (!Files.exists(path)) {
+                return; // nothing to load
             }
 
-            if (Files.exists(path)) {
-                try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String[] parts = line.split(" \\| ");
-                        if (parts.length < 3) {
-                            continue; // Skip invalid lines
-                        }
-                        String type = parts[0]; // Type of task (T, D, E)
-                        String status = parts[1]; // Task status (1 for done, 0 for not done)
-                        String description = parts[2]; // Task description
-                        boolean isDone = status.equals("1");
-                        Task task = null;
-                        switch (type) {
-                        case "T":
-                            task = new ToDos(description);
-                            break;
-                        case "D":
-                            if (parts.length > 3) {
-                                String deadline = parts[3];
-                                task = new Deadline(description, deadline);
-                            }
-                            break;
-                        case "E":
-                            if (parts.length > 3) {
-                                String fromTo = parts[3];
-                                String[] timeParts = fromTo.split(" to ");
-                                if (timeParts.length == 2) {
-                                    task = new Events(description, timeParts[0], timeParts[1]);
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                        }
-                        if (task != null) {
-                            if (isDone) {
-                                task.markAsDone();
-                            }
-                            taskList.addTask(task);
-                        }
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    ParsedTask parsed = parseLine(line);
+                    if (parsed == null) {
+                        continue; // skip malformed line
                     }
+                    Task task = createTaskFromParsed(parsed);
+                    if (task == null) {
+                        continue; // could not create task from parsed data
+                    }
+                    if (parsed.isDone) {
+                        task.markAsDone();
+                    }
+                    taskList.addTask(task);
                 }
             }
         } catch (IOException e) {
@@ -105,20 +79,89 @@ public class Storage {
     public void saveTasks(TaskList taskList) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (Task task : taskList.getTasks()) {
-                String taskStatus = task.isDone() ? "1" : "0";
-                String taskDescription = task.getDescription();
-                if (task instanceof ToDos) {
-                    bw.write("T | " + taskStatus + " | " + taskDescription + "\n");
-                } else if (task instanceof Deadline) {
-                    bw.write("D | " + taskStatus + " | " + taskDescription + " | "
-                            + ((Deadline) task).getDeadline() + "\n");
-                } else if (task instanceof Events) {
-                    bw.write("E | " + taskStatus + " | " + taskDescription + " | "
-                            + ((Events) task).getFrom() + " to " + ((Events) task).getTo() + "\n");
-                }
+                bw.write(formatTaskLine(task));
+                bw.write("\n");
             }
         } catch (IOException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    // --- Helper methods to reduce nesting and clarify intent ---
+
+    private void ensureParentDirectories(Path path) throws IOException {
+        Path parent = path.getParent();
+        if (parent != null && !Files.exists(parent)) {
+            Files.createDirectories(parent);
+        }
+    }
+
+    private ParsedTask parseLine(String line) {
+        if (line == null || line.isBlank()) {
+            return null;
+        }
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) {
+            return null;
+        }
+        String type = parts[0];
+        boolean isDone = "1".equals(parts[1]);
+        String description = parts[2];
+        String extra = parts.length > 3 ? parts[3] : null;
+        return new ParsedTask(type, isDone, description, extra);
+    }
+
+    private Task createTaskFromParsed(ParsedTask p) {
+        switch (p.type) {
+        case "T":
+            return new ToDos(p.description);
+        case "D":
+            if (p.extra != null) {
+                return new Deadline(p.description, p.extra);
+            }
+            return null;
+        case "E":
+            if (p.extra != null) {
+                String[] timeParts = p.extra.split(" to ");
+                if (timeParts.length == 2) {
+                    return new Events(p.description, timeParts[0], timeParts[1]);
+                }
+            }
+            return null;
+        default:
+            return null;
+        }
+    }
+
+    private String formatTaskLine(Task task) {
+        String taskStatus = task.isDone() ? "1" : "0";
+        String taskDescription = task.getDescription();
+        if (task instanceof ToDos) {
+            return "T | " + taskStatus + " | " + taskDescription;
+        } else if (task instanceof Deadline) {
+            return "D | " + taskStatus + " | " + taskDescription + " | " + ((Deadline) task).getDeadline();
+        } else if (task instanceof Events) {
+            return "E | " + taskStatus + " | " + taskDescription + " | " + ((Events) task).getFrom() + " to "
+                    + ((Events) task).getTo();
+        }
+        return ""; // unknown task type
+    }
+
+    /**
+     * Small holder for parsed fields from a saved line. Keeps parsing logic
+     * decoupled from task construction and reduces nesting in the main loader.
+     */
+    private static class ParsedTask {
+        final String type;
+        final boolean isDone;
+        final String description;
+        final String extra;
+
+        ParsedTask(String type, boolean isDone, String description, String extra) {
+            this.type = type;
+            this.isDone = isDone;
+            this.description = description;
+            this.extra = extra;
         }
     }
 }

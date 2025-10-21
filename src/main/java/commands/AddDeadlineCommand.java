@@ -13,46 +13,51 @@ import ui.Ui;
 
 /**
  * The AddDeadlineCommand class represents a command to add a new deadline task to the task list.
- * It takes a description and a deadline string, validates the deadline format, and adds the task
- * to the task list. The task list is then saved to the storage.
- * This class extends the Command class.
+ * It accepts a raw argument string (description + /by + date) and performs parsing/validation in execute().
  */
 public class AddDeadlineCommand extends Command {
-    private final String description;
-    private final String deadline;
+    private final String rawArg;
 
     /**
-     * Constructs an AddDeadlineCommand with the given description and deadline.
+     * Constructs an AddDeadlineCommand with the raw argument as provided by the parser.
+     * The raw argument should contain the description and the deadline separated by "/by".
      *
-     * @param description The description of the deadline task.
-     * @param deadline The deadline date as a string.
+     * @param rawArg raw argument string (may be null)
      */
-    public AddDeadlineCommand(String description, String deadline) {
-        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
-        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
-        this.description = description;
-        this.deadline = deadline;
+    public AddDeadlineCommand(String rawArg) {
+        this.rawArg = rawArg;
     }
 
     /**
-     * Executes the AddDeadlineCommand. This method validates the date format of the deadline,
-     * creates a new Deadline task, adds it to the task list, and saves the updated task list
-     * to storage.
+     * Executes the AddDeadlineCommand. This method parses and validates the raw argument string,
+     * checks for the presence of both description and deadline date, creates a new Deadline task,
+     * adds it to the task list, and saves the updated task list to storage.
      *
      * @param taskList The task list where the task will be added.
      * @param ui The UI object to interact with the user (though not used in this method).
      * @param storage The storage object to save the updated task list.
-     * @throws JackException If the date format is invalid or the input is incorrect.
+     * @throws JackException If the raw argument is empty, the deadline format is invalid,
+     * or the input is incorrect.
      */
     @Override
-
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
-        assert description != null && !description.trim().isEmpty() : "Description must not be empty";
-        assert deadline != null && !deadline.trim().isEmpty() : "Deadline must not be empty";
+        if (rawArg == null || rawArg.trim().isEmpty()) {
+            throw new JackException("The description of a deadline cannot be empty.");
+        }
+        // Expect format: <description> /by <yyyy-MM-dd>
+        String[] parts = rawArg.split("/by", 2);
+        if (parts.length < 2) {
+            throw new JackException("Invalid deadline format. Use: deadline <description> /by <yyyy-MM-dd>");
+        }
+        String description = parts[0].trim();
+        String by = parts[1].trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            throw new JackException("Invalid deadline format. Description and date must be provided.");
+        }
 
         try {
-            // Validate the deadline date format
-            LocalDate parsedDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            // Validate date format
+            LocalDate parsedDate = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Task task = new Deadline(description, parsedDate.toString());
             taskList.addTask(task);
             storage.saveTasks(taskList);

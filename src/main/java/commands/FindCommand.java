@@ -6,21 +6,21 @@ import tasklists.TaskList;
 import ui.Ui;
 /**
  * The FindCommand class represents a command to find tasks in the task list that match a given keyword.
- * It takes a keyword and searches the TaskList for tasks containing that keyword.
- * This class extends the Command class.
+ * It now accepts the raw argument string and validates inside execute().
  */
 public class FindCommand extends Command {
-    private final String keyword;
+    private final String rawArg;
 
-    public FindCommand(String keyword) {
-        assert keyword != null && !keyword.trim().isEmpty() : "Keyword must not be empty";
-        this.keyword = keyword;
+    public FindCommand(String rawArg) {
+        this.rawArg = rawArg;
     }
 
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
-        assert keyword != null && !keyword.trim().isEmpty() : "Keyword must not be empty";
-        var foundTasks = taskList.find(keyword);
+        if (rawArg == null || rawArg.trim().isEmpty()) {
+            throw new JackException("Keyword must not be empty");
+        }
+        var foundTasks = taskList.find(rawArg.trim());
         return ui.showFind(foundTasks);
     }
 
