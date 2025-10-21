@@ -13,6 +13,7 @@ src/main/resources/docs/
 *.iml
 bin/
 
+
 # Ignore all JAR files
 *.jar
 
