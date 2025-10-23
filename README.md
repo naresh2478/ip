@@ -6,6 +6,9 @@ This is a project template for a greenfield Java project. It's named after the J
 
 The full user guide is included in the repository at `docs/README.md`.
 
+- View it locally in your editor: `docs/README.md`.
+- Or view it on GitHub (once pushed) at: `https://github.com/naresh2478/ip/blob/main/docs/README.md`.
+
 Quick link (relative path): `docs/README.md`.
 
 ## Setting up in Intellij
