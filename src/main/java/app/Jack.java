@@ -37,20 +37,27 @@ public class Jack {
     public void run() {
         ui.showWelcome(); // Show welcome message
 
-        boolean isExit = false;
-        while (!isExit) {
+        while (true) {
             try {
                 String fullCommand = ui.readCommand(); // Read the user command
                 // Parse the command using Parser.Parser and execute it
                 Command c = Parser.parse(fullCommand);
-                c.execute(taskList, ui, storage);
+                String response = c.execute(taskList, ui, storage);
 
-                // Check if the command should exit the program
-                isExit = c.isExit();
+                // Print the response for CLI users
+                if (response != null && !response.isEmpty()) {
+                    System.out.println(response);
+                }
+
+                // If this is an exit command, persist tasks and stop the loop
+                if (c.isExit()) {
+                    storage.saveTasks(taskList);
+                    break;
+                }
             } catch (JackException e) {
-                ui.showError(e.getMessage()); // Show user-friendly error message
+                System.out.println(ui.showError(e.getMessage())); // Show user-friendly error message
             } catch (Exception e) {
-                ui.showError(e.getMessage()); // Show error message
+                System.out.println(ui.showError(e.getMessage())); // Show error message
             }
         }
     }
@@ -65,6 +72,11 @@ public class Jack {
         try {
             Command c = Parser.parse(input);
             String response = c.execute(taskList, ui, storage);
+
+            // Persist tasks if GUI commanded exit
+            if (c.isExit()) {
+                storage.saveTasks(taskList);
+            }
 
             assert response != null : "Command execution should not return null";
             return response;
