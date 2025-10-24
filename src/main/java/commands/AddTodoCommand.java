@@ -27,12 +27,12 @@ public class AddTodoCommand extends Command {
      * @param taskList The task list where the To-Do task will be added.
      * @param ui The UI object to interact with the user (not used in this method).
      * @param storage The storage object used to save the updated TaskList.
-     * @throws IllegalArgumentException if the description is null or empty.
+     * @throws JackException if the description is null or empty.
      */
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
         if (description == null || description.trim().isEmpty()) {
-            throw new IllegalArgumentException("The description of a todo cannot be empty.");
+            throw new JackException("The description of a todo cannot be empty.");
         }
 
         Task task = new ToDos(description);

@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.JackException;
 import storage.Storage;
 import tasklists.TaskList;
 import tasks.ToDos;
@@ -48,14 +49,14 @@ class AddToDoCommandTest {
     }
 
     @Test
-    void execute_withEmptyDescription_throwsIllegalArgumentException() {
+    void execute_withEmptyDescription_throwsJackException() {
         AddTodoCommand cmd = new AddTodoCommand("");
-        assertThrows(IllegalArgumentException.class, () -> cmd.execute(taskList, ui, storage));
+        assertThrows(JackException.class, () -> cmd.execute(taskList, ui, storage));
     }
 
     @Test
-    void execute_withNullDescription_throwsIllegalArgumentException() {
+    void execute_withNullDescription_throwsJackException() {
         AddTodoCommand cmd = new AddTodoCommand(null);
-        assertThrows(IllegalArgumentException.class, () -> cmd.execute(taskList, ui, storage));
+        assertThrows(JackException.class, () -> cmd.execute(taskList, ui, storage));
     }
 }

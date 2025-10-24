@@ -42,28 +42,37 @@ public class AddDeadlineCommand extends Command {
     @Override
     public String execute(TaskList taskList, Ui ui, Storage storage) throws JackException {
         if (rawArg == null || rawArg.trim().isEmpty()) {
-            throw new JackException("The description of a deadline cannot be empty.");
+            throw new JackException("Description and deadline date missing. Use: deadline <description> /by <yyyy-MM-dd>");
         }
         // Expect format: <description> /by <yyyy-MM-dd>
         String[] parts = rawArg.split("/by", 2);
         if (parts.length < 2) {
-            throw new JackException("Invalid deadline format. Use: deadline <description> /by <yyyy-MM-dd>");
+            throw new JackException("Deadline date missing. Use: deadline <description> /by <yyyy-MM-dd>");
         }
         String description = parts[0].trim();
         String by = parts[1].trim();
-        if (description.isEmpty() || by.isEmpty()) {
-            throw new JackException("Invalid deadline format. Description and date must be provided.");
+        if (description.isEmpty()) {
+            throw new JackException("Description cannot be empty. Use: deadline <description> /by <yyyy-MM-dd>");
+        }
+        if (by.isEmpty()) {
+            throw new JackException("Missing deadline date after '/by'. Use: deadline <description> /by <yyyy-MM-dd>");
+        }
+
+        // Quick check: detect if user provided a time component which is not supported for Deadline
+        if (by.matches(".*[:T ].*")) {
+            // Contains ':' or 'T' or space which likely indicates a time component
+            throw new JackException("Invalid deadline value: deadlines accept date only in yyyy-MM-dd (no time). Received: '" + by + "'.");
         }
 
         try {
-            // Validate date format
+            // Validate date format (yyyy-MM-dd)
             LocalDate parsedDate = LocalDate.parse(by, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Task task = new Deadline(description, parsedDate.toString());
             taskList.addTask(task);
             storage.saveTasks(taskList);
             return ui.showAdd(task, taskList.getTaskCount());
         } catch (DateTimeParseException e) {
-            throw new JackException("Invalid date format. Please use yyyy-MM-dd format for the deadline.");
+            throw new JackException("Invalid date format for deadline. Expected yyyy-MM-dd. Received: '" + by + "'.");
         }
     }
 

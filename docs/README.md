@@ -8,10 +8,25 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 
 ## Quick Start
 
-1. **Run Jack**
-   - If using the gui: Run the application using `./gradlew run` or by launching the main class in your IDE.
-   - If using the CLI: Run the main class `Jack`.
-2. **Start chatting!** Type your commands in the input box and Jack will respond.
+If you are an end user: you do not need to clone or build the source. A pre-built, runnable JAR is available on the project's Releases page — download the latest release directly and run the JAR.
+
+1. Download the released jar
+   - Visit the project's Releases page and download the JAR asset from the latest release: https://github.com/naresh2478/ip/releases (for example the asset may be named `jackApp.jar`).
+
+2. Run the application
+   - From a terminal (macOS / Linux / Windows PowerShell):
+     ```bash
+     java -jar path/to/jackApp.jar
+     ```
+     or, if the jar is in your current directory:
+     ```bash
+     java -jar ./jackApp.jar
+     ```
+   - Or simply double-click the jar file in your file manager (macOS / Windows) to launch the app (requires Java to be installed and the jar to be a runnable jar).
+
+Notes for end users
+- You do not need to download or build the project source — only the released runnable JAR is required.
+- Make sure Java 11+ is installed on the target machine.
 
 ---
 
@@ -22,12 +37,14 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 - **Example:** `todo read book`
 
 ### 2. Add a Deadline
-- **Command:** `deadline <description> /by <yyyy-mm-dd HH:mm>`
-- **Example:** `deadline submit report /by 2025-09-30 23:59`
+- **Command:** `deadline <description> /by <yyyy-MM-dd>`
+- **Example:** `deadline submit report /by 2025-09-30`
 
 ### 3. Add an Event
-- **Command:** `event <description> /at <yyyy-mm-dd HH:mm>`
-- **Example:** `event project meeting /at 2025-10-01 14:00`
+- **Command:** `event <description> /from <yyyy-mm-dd> /to <yyyy-mm-dd>`
+- **Example:** `event project meeting /from 2025-10-01 /to 2025-10-01`
+
+> Note: `event` uses `/from` and `/to` separators. The current implementation accepts simple date strings (yyyy-MM-dd) for start and end; avoid including time-of-day in the form `HH:mm` unless your application explicitly supports it.
 
 ### 4. List All tasks
 - **Command:** `list`
@@ -63,20 +80,21 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 | Command        | Format/Example                              | Description                       |
 |----------------|---------------------------------------------|-----------------------------------|
 | todo           | todo read book                              | Add a todo task                   |
-| deadline       | deadline submit report /by 2025-09-30 23:59 | Add a deadline task               |
-| event          | event project meeting /at 2025-10-01 14:00  | Add an event                      |
+| deadline       | deadline submit report /by 2025-09-30       | Add a deadline task               |
+| event          | event project meeting /from 2025-10-01 /to 2025-10-01  | Add an event                      |
 | list           | list                                        | List all tasks                    |
 | mark           | mark 2                                      | Mark task 2 as done               |
 | unmark         | unmark 2                                    | Unmark task 2                     |
 | delete         | delete 3                                    | Delete task 3                     |
 | find           | find book                                   | Find tasks with 'book'            |
-| sort deadlines | sort deadlines                              | Sort deadlines by date            |
+| sortdeadlines  | sortdeadlines                               | Sort deadlines by date            |
 | bye            | bye                                         | Exit the app                      |
 
 ---
 
 ## Tips
-- Dates must be in the format `yyyy-mm-dd HH:mm` (e.g., 2025-09-30 23:59).
+- Deadlines must be in the format `yyyy-MM-dd` (e.g., 2025-09-30).
+- Events use `/from` and `/to` and generally accept simple date strings `yyyy-MM-dd` for start/end.
 - Task numbers refer to the number shown in the `list` command.
 - Jack saves your tasks automatically.
 
@@ -90,4 +108,3 @@ Jack helps you keep track of your todos, deadlines, and events, all from a simpl
 ---
 
 Enjoy being productive with **Jack**!
-

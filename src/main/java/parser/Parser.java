@@ -42,7 +42,7 @@ public class Parser {
         case "find":
             return new FindCommand(arg);
 
-        case "sort":
+        case "sortdeadlines":
             return new SortDeadlinesCommand();
 
         default:

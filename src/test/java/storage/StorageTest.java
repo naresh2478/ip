@@ -24,7 +24,8 @@ public class StorageTest {
         TaskList original = new TaskList();
         ToDos todo = new ToDos("buy milk");
         Deadline deadline = new Deadline("submit report", "2025-12-31");
-        Events event = new Events("meeting", "09:00", "10:00");
+        // Use ISO date strings for Events (yyyy-MM-dd) to match Events constructor
+        Events event = new Events("meeting", "2025-03-01", "2025-03-02");
 
         // mark deadline as done
         deadline.markAsDone();
@@ -77,7 +78,8 @@ public class StorageTest {
                 "T | 1 | goodtodo\n" +
                 "D | 0 | desc only missing date\n" +
                 "D | 0 | bydate | 2025-01-01\n" +
-                "E | 0 | ev | start to end\n";
+                // Provide a well-formed event line using ISO dates so Events can be parsed
+                "E | 0 | ev | 2025-01-01 to 2025-01-02\n";
         Files.writeString(tempFile, mixed);
 
         TaskList loaded = new TaskList();
@@ -91,4 +93,3 @@ public class StorageTest {
         assertTrue(loaded.getTasks().stream().anyMatch(t -> t instanceof Events && t.getDescription().equals("ev")));
     }
 }
-
